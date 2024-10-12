@@ -3,10 +3,12 @@ package com.harish.jobms.job.impl;
 import com.harish.jobms.job.Job;
 import com.harish.jobms.job.JobRepository;
 import com.harish.jobms.job.JobService;
+import com.harish.jobms.job.dto.JobWithCompanyDTO;
 import com.harish.jobms.job.external.Company;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,13 +22,19 @@ public class JobServiceImpl implements JobService{
     }
 
     @Override
-    public List<Job> findAll(){
+    public List<JobWithCompanyDTO> findAll(){
+        List<Job> jobs = jobRepository.findAll();
+        List<JobWithCompanyDTO> jobWithCompanyDTOS = new ArrayList<>();
         RestTemplate restTemplate = new RestTemplate();
-        Company company = restTemplate.getForObject("http://localhost:8081/companies/1", Company.class);
-        System.out.println("Company name is " + company.getName());
-        System.out.println("Company id is " + company.getId());
-        return jobRepository.findAll();
-    };
+        for (Job job: jobs){
+            JobWithCompanyDTO jobWithCompanyDTO = new JobWithCompanyDTO();
+            jobWithCompanyDTO.setJob(job);
+            Company company = restTemplate.getForObject("http://localhost:8081/companies/"+job.getCompanyId(), Company.class);
+            jobWithCompanyDTO.setCompany(company);
+            jobWithCompanyDTOS.add(jobWithCompanyDTO);
+        }
+        return jobWithCompanyDTOS;
+    }; 
 
     @Override
     public void createJob(Job job) {

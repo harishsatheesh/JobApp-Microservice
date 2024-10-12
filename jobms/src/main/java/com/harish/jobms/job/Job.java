@@ -32,10 +32,6 @@ public class Job {
         return companyId;
     }
 
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
-
     public Long getId() {
         return id;
     }
@@ -58,6 +54,10 @@ public class Job {
 
     public String getMaxSalary() {
         return maxSalary;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
     public void setId(Long id) {
